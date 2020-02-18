@@ -77,6 +77,7 @@ class IQOptionAPI(object):  # pylint: disable=too-many-instance-attributes
     """Class for communication with IQ Option API."""
     # pylint: disable=too-many-public-methods
     socket_option_opened={}
+    socket_option_closed={}
     timesync = TimeSync()
     profile = Profile()
     candles = Candles()
