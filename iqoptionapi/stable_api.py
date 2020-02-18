@@ -628,6 +628,29 @@ class IQ_Option:
             if check:
                 return data["result"]["data"][str(id_number)]["win"]
             time.sleep(self.suspend)
+
+	# Function by kkagill ( https://github.com/Lu-Yi-Hsun/iqoptionapi/issues/196 | https://github.com/kkagill )
+	# Function only work with Options!
+    def check_win_v4(self, id_number):
+        while True:
+            try:
+               if self.api.socket_option_closed[id_number] != None:
+                   break
+            except:
+               pass
+        x = self.api.socket_option_closed[id_number]
+        return x['msg']['win'],(0 if x['msg']['win'] == 'equal' else float(x['msg']['sum']) * -1 if x['msg']['win'] == 'loose' else float(x['msg']['win_amount']) - float(x['msg']['sum']))
+
+    # Function by Adenilson ( https://t.me/CardosoSlv )
+	# Function only work with Options!
+    def check_win_v3(self, id_number):
+	       while True:
+		          result = self.get_optioninfo_v2(10)
+		          if result['msg']['closed_options'][0]['id'][0] == id_number and result['msg']['closed_options'][0]['id'][0] != None:			
+			             return result['msg']['closed_options'][0]['win'],(result['msg']['closed_options'][0]['win_amount']-result['msg']['closed_options'][0]['amount'] if result['msg']['closed_options'][0]['win'] != 'equal' else 0)
+			             break
+		          time.sleep(1)           
+           
 # -------------------get infomation only for binary option------------------------
 
     def get_betinfo(self, id_number):
