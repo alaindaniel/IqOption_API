@@ -247,6 +247,9 @@ class WebsocketClient(object):
             self.api.instrument_quotes_generated_raw_data[Active_name][period]=message
         elif message["name"]=="training-balance-reset":
             self.api.training_balance_reset_request=message["msg"]["isSuccessful"]
+        elif message["name"] == "socket-option-closed":
+            id=message["msg"]["id"]
+            self.api.socket_option_closed[id]=message   
  
             
     
