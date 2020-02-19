@@ -1,10 +1,15 @@
 # IQ Option API
 
-last update:2019/11/22
+# ESTE README AINDA IRÁ SER TRADUZIDO
+
+Ultima atualização: 2020/02/18
+
+Adicionado função check_win_v3() e check_win_v4(), somente para opções!
+
+Ultima atualização:2019/11/22
 
 Version:5.1
 add[get_option_open_by_other_pc](#getoptionopenbyotherpc) api
-
 
 Version:5.0
 
