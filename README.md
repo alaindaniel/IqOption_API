@@ -113,7 +113,7 @@ logging.basicConfig(level=logging.DEBUG,format='%(asctime)s %(message)s')
 ```
 
 Desligado
-```
+```python
 import logging
 logging.disable(level=(logging.DEBUG))
 ```
@@ -129,7 +129,7 @@ API = IQ_Option("email", "senha")
 
 ### Limitar tentativas de reconexão com set_max_reconnect()
 O valor padrão é 5, para evitar que sua conta e IP sejam banidos pela IQ por exceder o limite máximo de tentativas de conexão.
-```
+```python
 API.set_max_reconnect(number)
 ```
 
@@ -141,10 +141,8 @@ Caso ocorra algum erro e a conexão com a IQ seja perdida, você pode estar impl
 
 ```python
 from iqoptionapi.stable_api import IQ_Option
-import logging
 import time
 
-logging.basicConfig(level=logging.DEBUG,format='%(asctime)s %(message)s')
 
 API = IQ_Option("email", "password")
 API.set_max_reconnect(-1) # Valor negativo irá deixar o numero máximo de reconexões infinito(cuidado)!
