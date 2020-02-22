@@ -1,822 +1,790 @@
 # IQ Option API
 
-# ESTE README AINDA IRÁ SER TRADUZIDO
+## Versão customizada por IQ Coding ([YouTube](https://www.youtube.com/channel/UC51qSJBV60nneZXVNgM-bKQ))
+## Este Readme ainda está sendo traduzido!
+---
+## Atualizações e versões
 
-Ultima atualização: 2020/02/18
+### Ultima atualização: 2020/02/18
+- Adicionado função check_win_v3() 
+- Adicionado função check_win_v4()
+> Somente para opções!
 
-Adicionado função check_win_v3() e check_win_v4(), somente para opções!
+### Ultima atualização: 2019/11/22
+#### Vesão 5.1
+- Adicionado [get_option_open_by_other_pc()](#getoptionopenbyotherpc)
 
-Ultima atualização:2019/11/22
+#### Vesão 5.0
+- Adicionado [get_digital_spot_profit_after_sale()](#getdigitalspotprofitaftersale)
 
-Version:5.1
-add[get_option_open_by_other_pc](#getoptionopenbyotherpc) api
+#### Vesão 4.5
+- Adicionado [get_remaning()](#getremaning)
 
-Version:5.0
+#### Vesão 4.4
+- check_win_digital(Mensagem síncrona) e check_win_digital_v2(Mensagem assíncrona) concertados
+> Agora são implementados de maneira diferente
+- Adicionado get_digital_position()
 
-please donate >< get_digital_spot_profit_after_sale pay me lot of time
+#### Vesão 4.3
+- Adicionado subscribe_top_assets_updated & popularity
 
-https://github.com/Lu-Yi-Hsun/iqoptionapi/issues/125
+#### Vesão 4.2
+- Adicionado reconnect() sample
+- Adicionado get_async_order)
 
-add [get_digital_spot_profit_after_sale](#getdigitalspotprofitaftersale) api
+#### Vesão 4.0.1
+- fix get_positions()
+- Adicionado get_optioninfo_v2()
 
-Version:4.5
+--
 
-add [get_remaning](#getremaning) api
+## Soluções de problemas/erros
 
-Version:4.4
- 
-fix check_win_digital(check_win_digital(Synchronous message) and check_win_digital_v2(Asynchronous messages) are different implement way)
- 
-add get_digital_position()
+#### Minha conta tem verificação em duas etapas, como proceder?
+Infelizmente a API não consegue trabalhar com contas que possuem verificação em duas etapas, será necessário você 
+desativar a verificação em duas etapas para poder utilizar a APO
 
-Version:4.3
-
-add subscribe_top_assets_updated & popularity
-https://github.com/Lu-Yi-Hsun/iqoptionapi/issues/131
-
-Version:4.2
-
-add reconnect sample
-add get_async_order api
-
-Version:4.0.1
-
-fix get_positions()
-https://github.com/Lu-Yi-Hsun/iqoptionapi/issues/132
-
-add get_optioninfo_v2
-
-
-Version:4.0.0
-
-:exclamation::exclamation::exclamation:
-update websocket-client==0.56
-:exclamation:
-please uninstall all websocket-client and update up websocket-client==0.56
+#### Erros com WebSocket ou ao logar
+Caso ocorra erros com websocket, o mesmo deve ser desinstalado e reinstalado(0.56)!
+```bash
+pip uninstall websocket-client
+pip install websocket-client==0.56
 ```
-sudo pip uninstall websocket-client
-sudo pip install websocket-client==0.56
+
+#### Conflito entre WebSocket e WebSocket-Cliente
+Este erro pode vir a acontecer caso você esteja usando Anaconda, por exemplo
+```bash
+pip uninstall websocket
+pip install websocket-client==0.56.0
 ```
-:exclamation:
 
 ---
-## About API
 
-only support US Dollar account
+## Sobre a API
+Desenvolvida em Python 3.7, você pode estar utilizando em "alto nivel" ou "baixo nivel", esta API pode trabalhar com Optções & Digital & Forex & Ações & Commodities & Crypto & ETFs;
 
-https://github.com/Lu-Yi-Hsun/iqoptionapi/issues/73#issue-406537365
-
-```python
-#hight level api ,This api is write base on ""iqoptionapi.api" for more easy
+```Python
+# Alto Nivel
 from iqoptionapi.stable_api import IQ_Option
-#low level api
+
+# Baixo Nivel
 from iqoptionapi.api import IQOptionAPI
 ```
+
 ```bash
 .
 ├── docs
-├── iqoptionapi(API code)
-    ├── http(doing http get/post)
+├── iqoptionapi(Código da API)
+    ├── http(Realiza requisições HTTP GET/POST)
     └── ws
-        ├── chanels(Doing websocket action)
-        └── objects(Get back data from websocket action)
-```
-
-
-
-
-## Can not loging problem
-
-#### fix way 1 
-```bash
-sudo pip3 uninstall websocket-client
-sudo pip3 install websocket-client==0.56
-```
-
- 
-
-### problem 2
-
-#### websocket conflict with websocket-client
-
-if you have this problem
-
-https://github.com/Lu-Yi-Hsun/iqoptionapi/issues/66
-
-fix way
-```bash
-sudo pip3 uninstall websocket
-sudo pip3 install websocket-client==0.47.0
+        ├── chanels(Utiliza o WebSocket)
+        └── objects(Retorna as informações do WebSocket)
 ```
 
 ---
 
-## Installation & GET new version
-For Python3
+## Instalação e Atualização
+Para Python 3
 ```bash
-sudo pip3 install -U git+git://github.com/Lu-Yi-Hsun/iqoptionapi.git
+pip3 install -U git+git://github.com/Lu-Yi-Hsun/iqoptionapi.git
 ```
-For Python2
+Para Python 2
 ```bash
-sudo pip2 install -U git+git://github.com/Lu-Yi-Hsun/iqoptionapi.git
-```
----
-## Littile sample
-```python
-import time
-from iqoptionapi.stable_api import IQ_Option
-I_want_money=IQ_Option("email","password")
-goal="EURUSD"
-print("get candles")
-print(I_want_money.get_candles(goal,60,111,time.time()))
+pip2 install -U git+git://github.com/Lu-Yi-Hsun/iqoptionapi.git
 ```
 
 ---
 
-## Document
+## Funções e exemplos
 
-### Import 
+### Importar o projeto para seu código
 ```python
 from iqoptionapi.stable_api import IQ_Option
 ```
----
-### Debug mode on
 
+---
+
+### Debug 
+
+Ligado
 ```python
 import logging
 logging.basicConfig(level=logging.DEBUG,format='%(asctime)s %(message)s')
 ```
+
+Desligado
+```
+import logging
+logging.disable(level=(logging.DEBUG))
+```
+
 ---
-### Login
-!!!
 
-Login NOT support SMS Authorization yet
-
-I suggest close it because your robot will stop to wait you to check sms code (on phone)....
-
-!!!
-
+## Como realizar login
 ```python
-I_want_money=IQ_Option("email","password")
+from iqoptionapi.stable_api import IQ_Option
+
+API = IQ_Option("email", "senha")
 ```
 
----
-### <a id=setmaxreconnect>set_max_reconnect</a>
-default number is 5
-
-https://github.com/Lu-Yi-Hsun/iqoptionapi/issues/22
-
-Protect if you get some error (iqoptionapi auto reconnect) too many time,IQoption will ban your IP
-
+### Limitar tentativas de reconexão com set_max_reconnect()
+O valor padrão é 5, para evitar que sua conta e IP sejam banidos pela IQ por exceder o limite máximo de tentativas de conexão.
 ```
-I_want_money.set_max_reconnect(number)
+API.set_max_reconnect(number)
 ```
 
----
-### Reconnect&check connect
 
-some time connect will close so this way can check connect and reconnect
 
-try close your network and restart network in this sample
+### Reconectar e checar se está conectado
+
+Caso ocorra algum erro e a conexão com a IQ seja perdida, você pode estar implementando isto
 
 ```python
 from iqoptionapi.stable_api import IQ_Option
 import logging
 import time
+
 logging.basicConfig(level=logging.DEBUG,format='%(asctime)s %(message)s')
-I_want_money=IQ_Option("email","password")
-I_want_money.set_max_reconnect(-1)#allow unlimited reconnect 
+
+API = IQ_Option("email", "password")
+API.set_max_reconnect(-1) # Valor negativo irá deixar o numero máximo de reconexões infinito(cuidado)!
+
 while True:
-    #you can !!close yuor network!! to simulation network fails
-    if I_want_money.check_connect()==False:#detect the websocket is close
-        print("try reconnect")
-        I_want_money.connect()#try to connect
-        print("reconnect Success")
+	if API.check_connect() == False: # Detecta se o WebSocket está conectado ou não
+		print("Conexao perdida, tentando reconectar..")
+        API.connect() # Realizando a conexão novamente
+        print("Reconectado com sucesso!")
     time.sleep(1)
 ```
+ 
+### Checar conexão
+Função retorna True ou False
+```python
+print(API.check_connect())
+```
 
- 
- 
+### Conectar(ou reconectar)
+```python
+API.connect()
+```
+
 ---
-### Check version
+
+### Tipo de conta e banca
+
+#### Retornar sua banca com get_balance()
+```python
+API.get_balance()
+```
+
+#### Resetar conta de TREINAMENTO (10k)
+Função para resetar a conta de treinamento(depositar os 10k de testes)
 
 ```python
 from iqoptionapi.stable_api import IQ_Option
-print(IQ_Option.__version__)
+
+API = IQ_Option("email","password")
+
+print(API.reset_practice_balance())
 ```
-### <a id=checkconnect> Check connect</a>
 
-return True/False
-
+#### Alterar entre conta REAL e de TREINAMENTO
 ```python
-print(I_want_money.check_connect())
+API.change_balance(TIPO)
+		#TIPO: "PRACTICE" ou "REAL"
 ```
 
-### <a id=reconnect>Reconnect</a>
-```python
-I_want_money.connect()
-```
 ---
 
-### <a id=checkopen>Check Asset if open or not</a>
+### Retornar ativos e verificar se estão aberto
 
-:exclamation:be careful get_all_open_time() is very heavy for network.
+ATENÇÃO: Tome cuidado, get_all_open_time() é pesado para a internet
 
-get_all_open_time() return the DICT
+- Função get_all_open_time() retorna um DICT
+- "cfd" inclue ações,Commodities e ativos de ETFs
 
-"cfd" is include Stock,Commodities,ETFs asset
+Verificar se esta aberto
+DICT["forex"/"cfd"/"crypto"/"digital"/"turbo"/"binary"][NOME DO ATIVO]["open"]
+> O retorno é em True ou False
 
-DICT["forex"/"cfd"/"crypto"/"digital"/"turbo"/"binary"][Asset Name]["open"]
-
-it will return True/False
- 
 ```python
 from iqoptionapi.stable_api import IQ_Option
-import logging
-import random
-logging.basicConfig(level=logging.DEBUG,format='%(asctime)s %(message)s')
-I_want_money=IQ_Option("email","password")
-ALL_Asset=I_want_money.get_all_open_time()
-#check if open or not
-print(ALL_Asset["forex"]["EURUSD"]["open"]) 
-print(ALL_Asset["cfd"]["FACEBOOK"]["open"])#Stock,Commodities,ETFs
-print(ALL_Asset["crypto"]["BTCUSD-L"]["open"])
-print(ALL_Asset["digital"]["EURUSD-OTC"]["open"])
+API = IQ_Option("email", "password")
 
-#Binary have two diffenence type:"turbo","binary"
+ATIVOS = API.get_all_open_time()
+
+#Checando se está aberto ou não
+print(ATIVOS["forex"]["EURUSD"]["open"]) 
+print(ATIVOS["cfd"]["FACEBOOK"]["open"]) #Ações,Commodities e ETFs
+print(ATIVOS["crypto"]["BTCUSD-L"]["open"])
+print(ATIVOS["digital"]["EURUSD-OTC"]["open"])
+
+#Binarias tem dois modos diferentes: "turbo" e "binary"
 print(ALL_Asset["turbo"]["EURUSD-OTC"]["open"])
 print(ALL_Asset["binary"]["EURUSD-OTC"]["open"])
-
-
-#!!!! exception ""
-print(ALL_Asset["binary"]["not exist asset"]["open"])#it will return "{}" a None of the dict
-
-#!!!!print all!!!!
-for type_name, data in ALL_Asset.items():
-    for Asset,value in data.items():
-        print(type_name,Asset,value["open"])
 ```
 
-### View all ACTIVES Name
-you will get right all ACTIVES and code
+Caso você indicar um ativo inexistente, irá ser retornado apenas "{}" ou None
 
-[ACTIVES](iqoptionapi/constants.py)
+Para exibir todas os ativos
+ 
+```python
+from iqoptionapi.stable_api import IQ_Option
+API = IQ_Option("email", "password")
+
+ATIVOS=API.get_all_open_time()
+
+for tipo, data in ATIVOS.items():
+    for ativo_nome,value in data.items():
+        print(tipo,ativo_nome,value["open"])
+```
+---
+
+### Ver o nome e ID de todos os ativos
+- [Arquivo com lista de ativos e id's](iqoptionapi/constants.py)
 
 ```python
-print(I_want_money.get_all_ACTIVES_OPCODE())
+print(API.get_all_ACTIVES_OPCODE())
 ```
 
 ---
 
-### For all
-
-this api can work for option&digital&Forex&Stock&Commodities&Crypto&ETFs
-
-#### get_async_order
-
-get the order data by id 
+### get_async_order()
+Pegar informações sobre ordem/operação pelo ID
 
 ```python
 from iqoptionapi.stable_api import IQ_Option
-import logging
 import time
-#logging.basicConfig(level=logging.DEBUG,format='%(asctime)s %(message)s')
-I_want_money=IQ_Option("email","password")
+
+API = IQ_Option("email", "password")
  
-ACTIVES="EURUSD"
-duration=1#minute 1 or 5
-amount=1
-action="call"#put
+PARIDADE = "EURUSD"
+duracao = 1 #Tempo em minutos: 1 ou 5
+entrada = 1
+direcao = "call" #call ou put
 
-print("__For_Binary_Option__")
-_,id=I_want_money.buy(amount,ACTIVES,action,duration)
-while I_want_money.get_async_order(id)==None:
+print("__Para_Opções_Binarias__")
+_,id = API.buy(entrada, PARIDADE, direcao, duracao)
+while API.get_async_order(id)==None:
     pass
-print(I_want_money.get_async_order(id))
+print(API.get_async_order(id))
 print("\n\n")
 
-print("__For_Digital_Option__spot")
-id=I_want_money.buy_digital_spot(ACTIVES,amount,action,duration)
-while I_want_money.get_async_order(id)==None:
-    pass
-order_data=I_want_money.get_async_order(id)
-print(I_want_money.get_async_order(id))
-print("\n\n")
 
-print("__For_Forex_Stock_Commodities_Crypto_ETFs")
-instrument_type="crypto"
-instrument_id="BTCUSD"
-side="buy"
-amount=1.23
-leverage=3
-type="market"
-limit_price=None 
-stop_price=None 
-stop_lose_kind="percent" 
-stop_lose_value=95 
-take_profit_kind=None 
-take_profit_value=None 
-use_trail_stop=True 
-auto_margin_call=False 
-use_token_for_commission=False 
-check,id=I_want_money.buy_order(instrument_type=instrument_type, instrument_id=instrument_id,
-            side=side, amount=amount,leverage=leverage,
-            type=type,limit_price=limit_price, stop_price=stop_price,
-            stop_lose_value=stop_lose_value, stop_lose_kind=stop_lose_kind,
-            take_profit_value=take_profit_value, take_profit_kind=take_profit_kind,
-            use_trail_stop=use_trail_stop, auto_margin_call=auto_margin_call,
-            use_token_for_commission=use_token_for_commission)
-while I_want_money.get_async_order(id)==None:
+print("__Para_Opcoes_Digitais__")
+id = API.buy_digital_spot(PARIDADE, entrada, direcao, duracao)
+while API.get_async_order(id)==None:
     pass
-order_data=I_want_money.get_async_order(id)
-print(I_want_money.get_async_order(id))
+order_data = API.get_async_order(id)
+print(API.get_async_order(id))
+print("\n\n")
 ```
 
+---
 
-### For Options
+### "Humor dos Traders"
 
-#### <a id=buy>BUY</a>
+Por enquanto, só está disponivel para **binario**
 
-Sample
+Exemplo
 ```python
 from iqoptionapi.stable_api import IQ_Option
-import logging
+
+API = IQ_Option("email", "password")
+
+Paridade = "EURUSD"
+
+API.start_mood_stream(Paridade)
+print(API.get_traders_mood(Paridade))
+API.stop_mood_stream(Paridade)
+```
+
+#### get_traders_mood()
+
+Exibir/pegar a porcentagem de **call**, se você quiser saber a porcentagem de put, basta fazer 100-humor_call
+
+```python
+API.get_traders_mood(Paridade)
+	# Retorno: Sera do tipo float que representa em porcentagem os 'calls'
+	# Se você quiser saber a porcentagem de put, tente 100-API.get_traders_mood(Paridade)
+```
+
+#### get_all_traders_mood()
+Pega tudo
+```python
+API.get_all_traders_mood(Paridade)
+	# Retorno: (dict) com todos os 'humores'
+```
+
+---
+
+### Para Opções (binarias)
+
+#### Realizar operação na binaria com buy()
+
+Exemplo
+```python
+from iqoptionapi.stable_api import IQ_Option
 import time
-logging.basicConfig(level=logging.DEBUG,format='%(asctime)s %(message)s')
-I_want_money=IQ_Option("email","pass")
-goal="EURUSD"
-print("get candles")
-print(I_want_money.get_candles(goal,60,111,time.time()))
-Money=1
-ACTIVES="EURUSD"
-ACTION="call"#or "put"
-expirations_mode=1
 
-I_want_money.buy(Money,ACTIVES,ACTION,expirations_mode)
+API = IQ_Option("email", "pass")
+
+Entrada = 1
+Paridade = "EURUSD"
+Direcao = "call" # Ou "put"
+Duracao = 1
+
+id = API.buy(Entrada, Paridade, direcao, Duracao)
 ```
 
+Explicação
 ```python
-I_want_money.buy(Money,ACTIVES,ACTION,expirations)
-                #Money:How many you want to buy type(int)
-                #ACTIVES:sample input "EURUSD" OR "EURGBP".... you can view by get_all_ACTIVES_OPCODE
-                #ACTION:"call"/"put" type(str)
-                #expirations:input minute,careful too large will false to buy(Closed market time)thank Darth-Carrotpie's code (int)https://github.com/Lu-Yi-Hsun/iqoptionapi/issues/6
-                #return:(None/id_number):if sucess return (id_number) esle return(None) 2.1.5 change this 
-```
-#### <a id=buymulti>buy_multi</a>
-
-Sample
-```python
-from iqoptionapi.stable_api import IQ_Option
-I_want_money=IQ_Option("email","password")
-Money=[]
-ACTIVES=[]
-ACTION=[]
-expirations_mode=[]
-
-Money.append(1)
-ACTIVES.append("EURUSD")
-ACTION.append("call")#put
-expirations_mode.append(1)
-
-Money.append(1)
-ACTIVES.append("EURAUD")
-ACTION.append("call")#put
-expirations_mode.append(1)
-
-print("buy multi")
-id_list=I_want_money.buy_multi(Money,ACTIVES,ACTION,expirations_mode)
-
-print("check win only one id (id_list[0])")
-print(I_want_money.check_win_v2(id_list[0]))
+API.buy(Entrada, Paridade, direcao, duracao)
+                # Entrada: Quanto em reais/dolares você quer usar na entrada (Minimo 1 dolar ou 2 reais), a informação tem que ser do tipo int ou float
+                # Paridade: Qual paridade você deseja operar
+                # Direcao: "call"/"put", informação deve ser do tipo str
+                # Duracao: Qual o tempo da operação em minutos, cuidado com operações muito longas para não dar erro(mercado fechado)!
+                # dados retornados: (None ou id_number):if sucess return (id_number) esle return(None) 2.1.5 change this 
 ```
 
-#### <a id=getremaning>get_remaning</a>
+---
 
-purchase time=remaning time - 30
+#### Operações simultaneas com buy_multi()
 
+Exemplo
 ```python
 from iqoptionapi.stable_api import IQ_Option
-I_want_money=IQ_Option("email","password")
-Money=1
-ACTIVES="EURUSD"
-ACTION="call"#or "put"
-expirations_mode=1
+API = IQ_Option("email", "password")
+
+Entrada = []
+Paridade = []
+Direcao = []
+Duracao = []
+
+Entrada.append(1)
+Paridade.append("EURUSD")
+Direcao.append("call") # ou put
+Duracao.append(1)
+
+Entrada.append(1)
+Paridade.append("EURAUD")
+Direcao.append("call")#put
+Duracao.append(1)
+
+print("buy_multi()")
+ids = API.buy_multi(Entrada, Paridade, Direcao, Duracao)
+
+print("Checar resultado em apenas 1 paridade (ids[0])")
+print(API.check_win_v3(ids[0]))
+```
+
+---
+
+#### Tempo restante para operação com get_remaning()
+
+Formula: tempo de compra = tempo restante - 30
+
+```python
+from iqoptionapi.stable_api import IQ_Option
+API=IQ_Option("email", "password")
+
+Entrada = 1
+Paridade = "EURUSD"
+Direcao = "call"#or "put"
+Duracao = 1
+
 while True:
-    remaning_time=I_want_money.get_remaning(expirations_mode)
-    purchase_time=remaning_time-30
-    if purchase_time<4:#buy the binary option at purchase_time<4
-        I_want_money.buy(Money,ACTIVES,ACTION,expirations_mode)
+    tempo_restante = API.get_remaning(Duracao)
+    tempo_de_compra = tempo_restante-30
+    if tempo_de_compra < 4: #Compre Binaria em tempo_de_compra < 4
+        API.buy(Entrada, Paridade, Direcao, Duracao)
         break
 ```
 
-#### <a id=selloption>sell_option</a>
-
+#### Vender operação com sell_option()
+O ID('s) passados para o sell_option() devem ser int ou um list contendo os id's
 ```python
-I_want_money.sell_option(sell_all)#input int or list
+API.sell_option(sell_ids)
 ```
 
-Sample
-
+Exemplo
 ```python
 from iqoptionapi.stable_api import IQ_Option
 import time
-print("login...")
-I_want_money=IQ_Option("email","password")
 
-Money=1
-ACTIVES="EURUSD"
-ACTION="call"#or "put"
-expirations_mode=1
+API = IQ_Option("email", "password")
 
-id=I_want_money.buy(Money,ACTIVES,ACTION,expirations_mode)
-id2=I_want_money.buy(Money,ACTIVES,ACTION,expirations_mode)
+Entrada = 1
+Paridade = "EURUSD"
+Direcao = "call"
+Duracao = 1
+
+id = API.buy(Entrada, Paridade, Direcao, Duracao)
+id2 = API.buy(Entrada, Paridade, Direcao, Duracao)
 
 time.sleep(5)
+
 sell_all=[]
 sell_all.append(id)
 sell_all.append(id2)
-print(I_want_money.sell_option(sell_all))
+
+print(API.sell_option(sell_all))
 ```
-#### check win
 
-(only for option)
+#### Verificar resultado da operação nas **BINÁRIA**
 
-It will do loop until get win or loose
+> As funções check_win() e check_win_v2() pararam de funcionar
 
-:exclamation:
+Para pegarmos o resultado de uma operação feito na binarias, podemos estar utilizando o check_win_v3() ou o check_win_v4()
 
-it have a little problem when network close and reconnect miss get "listInfoData"
 
-this function will doing Infinity loop
-
+###### check_win_v3()
 ```python
-I_want_money.check_win(23243221)
-#""you need to get id_number from buy function""
-#I_want_money.check_win(id_number)
-#this function will do loop check your bet until if win/equal/loose
+from iqoptionapi.stable_api import IQ_Option
+import time
+
+API = IQ_Option("email", "password")
+
+Entrada = 1
+Paridade = "EURUSD"
+Direcao = "call"
+Duracao = 1
+
+id = API.buy(Entrada, Paridade, Direcao, Duracao)
+
+time.sleep(5)
+
+print(API.check_win_v3(id))
+		# Você precisa ter o id da operação para poder fazer a verificação
+		# check_win_v3() não é aconselhado para pegar resultado de operação realizada a muitos trades atras, use o check_win_v4() nesta ocasião
+		# Esta função irá rodar em looping até retornar o resultado tipo 'tuple'
+		# Resultado retornado no padrão 'True/False',lucro
 ```
-##### check_win_v2
 
-(only for option)
-
-more better way
-
-an other way to fix that(implement by get_betinfo)
-
-input by int
-
+###### check_win_v4()
 ```python
-I_want_money.check_win_v2(23243221)
-#""you need to get id_number from buy function""
-#I_want_money.check_win_v2(id_number)
-#this function will do loop check your bet until if win/equal/loose
+from iqoptionapi.stable_api import IQ_Option
+import time
+
+API = IQ_Option("email", "password")
+
+Entrada = 1
+Paridade = "EURUSD"
+Direcao = "call"
+Duracao = 1
+
+id = API.buy(Entrada, Paridade, Direcao, Duracao)
+
+time.sleep(5)
+
+print(API.check_win_v4(id))
+		# Você precisa ter o id da operação para poder fazer a verificação
+		# Esta função irá rodar em looping até retornar o resultado tipo 'tuple'
+		# Resultado retornado no padrão 'True/False',lucro
 ```
+
 
 ---
-"get_binary_option_detail" and "get_all_profit" are base on "get_all_init()",if you want raw data you can call
+
+### Dados brutos da **BINÁRIA**
+
+#### get_all_init()
+
+"get_binary_option_detail()" e "get_all_profit()" são baseados no "get_all_init()", para retornar os dados "brutos", você pode utilizar:
+
+Exemplo
 ```python
-I_want_money.get_all_init()
+from iqoptionapi.stable_api import IQ_Option
+
+API = IQ_Option("email", "password")
+
+print(API.get_all_init())
 ```
-
----
-
-<a id=expirationtime></a>
 
 ![](image/expiration_time.png)
 
-#### get_binary_option_detail
+#### get_binary_option_detail()
 
-sample 
+Exemplo
 ```python
 from iqoptionapi.stable_api import IQ_Option
-print("login...")
-I_want_money=IQ_Option("email","password")
-d=I_want_money.get_binary_option_detail()
+
+API = IQ_Option("email", "password")
+
+d = API.get_binary_option_detail()
+
 print(d["CADCHF"]["turbo"])
 print(d["CADCHF"]["binary"])
 ```
 
-#### get all profit
-sample 
+#### get_all_profit()
+
+Exemplo
 ```python
 from iqoptionapi.stable_api import IQ_Option
-print("login...")
-I_want_money=IQ_Option("email","password")
-d=I_want_money.get_all_profit()
+
+API = IQ_Option("email", "password")
+d = API.get_all_profit()
+
 print(d["CADCHF"]["turbo"])
 print(d["CADCHF"]["binary"])
 ```
 ---
-#### get_betinfo
+#### Pegar histórico de trading das **BINÁRIAS**
 
-(only for option)
 
-it will get infomation about Bet by "id"
+Temos dois modos para fazer isto, para ambos precisamos indicar quantos 'trades' você quer retornar do histórico de trading ( apenas das binárias )
 
-:exclamation:
+###### get_optioninfo()
+```python
+from iqoptionapi.stable_api import IQ_Option
 
-if your bet(id) not have answer yet(game_state) or wrong id it will return False
-input by int
+API = IQ_Option("email", "password")
+
+print(API.get_optioninfo(10))
+```
+
+###### get_optioninfo_v2()
 
 ```python
- 
-isSuccessful,dict=I_want_money.get_betinfo(4452272449)
-#I_want_money.get_betinfo 
-#INPUT: int
-#OUTPUT:isSuccessful,dict
+from iqoptionapi.stable_api import IQ_Option
+
+API = IQ_Option("email", "password")
+
+print(API.get_optioninfo_v2(10))
 
 ```
-#### <a id=optioninfo>get_optioninfo</a>
 
-input how many data you want to get from Trading History(only for binary option)
 
-```
-print(I_want_money.get_optioninfo(10))
-```
-#### <a id=optioninfo>get_optioninfo_v2</a>
-
-input how many data you want to get from Trading History(only for binary option)
-
-```
-print(I_want_money.get_optioninfo_v2(10))
-```
-#### <a id=getoptionopenbyotherpc>get_option_open_by_other_pc</a>
-
-if your account is login in other plance/PC and doing buy option
-
-you can get the option by this function
+#### Pegar opções feitas por outro dispositivo com get_option_open_by_other_pc()
+Se sua conta está logada em outro celular/PC e está realizando operações, você pode "pegar" a operação do modo abaixo
 
 ```python
 import time
 from iqoptionapi.stable_api import IQ_Option
-I_want_money=IQ_Option("email","password")
+
+API = IQ_Option("email", "password")
+
 while True:
-    #please open website iqoption and buy some binary option
-    if I_want_money.get_option_open_by_other_pc()!={}:
+    # Abra o Website da IQ Option e faça alguma operação por lá
+    if API.get_option_open_by_other_pc()!={}:
         break
     time.sleep(1)
-print("Get option from other Pc and same account")
-print(I_want_money.get_option_open_by_other_pc())
+	
+print("Pegar operação feita nesta conta por outro dispositivo")
+print(API.get_option_open_by_other_pc())
 
-id=list(I_want_money.get_option_open_by_other_pc().keys())[0]
-I_want_money.del_option_open_by_other_pc(id)
-print("After del by id")
-print(I_want_money.get_option_open_by_other_pc())
+id=list(API.get_option_open_by_other_pc().keys())[0]
+API.del_option_open_by_other_pc(id)
+
+print("Depois de deleter com del_option_open_by_other_pc(), executamos get_option_open_by_other_pc() novamente ")
+print(API.get_option_open_by_other_pc())
 ```
 
-___
 ---
-### <a id=digital>For Digital</a>
-[Digital options buy with actual price sample code](https://github.com/Lu-Yi-Hsun/iqoptionapi/issues/65#issuecomment-511660908)
+---
 
-#### Sample
+### Para digitais
 
-```python
-from iqoptionapi.stable_api import IQ_Option
-import time
-import random
-I_want_money=IQ_Option("email","password")
 
-ACTIVES="EURUSD"
-duration=1#minute 1 or 5
-amount=1
-I_want_money.subscribe_strike_list(ACTIVES,duration)
-#get strike_list
-data=I_want_money.get_realtime_strike_list(ACTIVES, duration)
-print("get strike data")
-print(data)
-"""data
-{'1.127100': 
-    {  'call': 
-            {   'profit': None, 
-                'id': 'doEURUSD201811120649PT1MC11271'
-            },   
-        'put': 
-            {   'profit': 566.6666666666666, 
-                'id': 'doEURUSD201811120649PT1MP11271'
-            }	
-    }............
-} 
-"""
-#get price list
-price_list=list(data.keys())
-#random choose Strategy
-choose_price=price_list[random.randint(0,len(price_list)-1)]
-#get instrument_id
-instrument_id=data[choose_price]["call"]["id"]
-#get profit
-profit=data[choose_price]["call"]["profit"]
-print("choose you want to buy")
-print("price:",choose_price,"side:call","instrument_id:",instrument_id,"profit:",profit)
-#put instrument_id to buy
-buy_check,id=I_want_money.buy_digital(amount,instrument_id)
-if buy_check:
-    print("wait for check win")
-    #check win
-    while True:
-        check_close,win_money=I_want_money.check_win_digital_v2(id)
-        if check_close:
-            if float(win_money)>0:
-                win_money=("%.2f" % (win_money))
-                print("you win",win_money,"money")
-            else:
-                print("you loose")
-            break
-    I_want_money.unsubscribe_strike_list(ACTIVES,duration)
-else:
-    print("fail to buy,please run again")
-```
-#### <a id=strikelist>Get all strike list data</a>
+#### get_all_strike_list_data()
 
-##### Data format
+Formato da informação retornada
 
 ```python
-
 {'1.127100': {  'call': {'profit': None, 'id': 'doEURUSD201811120649PT1MC11271'},   'put': {'profit': 566.6666666666666, 'id': 'doEURUSD201811120649PT1MP11271'}	}.......}  
 ```
 
-##### sample
-
+Exemplo de uso
 ```python
 from iqoptionapi.stable_api import IQ_Option
 import time
-I_want_money=IQ_Option("email","password")
-ACTIVES="EURUSD"
-duration=1#minute 1 or 5
-I_want_money.subscribe_strike_list(ACTIVES,duration)
+
+API = IQ_Option("email", "password")
+
+Paridade = "EURUSD"
+Duracao = 1 # 1 ou 5 minutos
+
+API.subscribe_strike_list(Paridade, Duracao)
+
 while True:
-    data=I_want_money.get_realtime_strike_list(ACTIVES, duration)
-    for price in data:
-        print("price",price,data[price])
+    data = API.get_realtime_strike_list(Paridade, Duracao)
+    for preco in data:
+        print("Preco",preco,data[preco])
     time.sleep(5)
-I_want_money.unsubscribe_strike_list(ACTIVES,duration)
+	
+API.unsubscribe_strike_list(Paridade, Duracao)
 ```
 
-#### <a id=buydigitalspot>buy_digital_spot</a>
+#### Realizar operações nas Digitais com buy_digital_spot()
 
-buy the digit in current price
-
+Abrir operação na digital com preço atual
 ```python
 from iqoptionapi.stable_api import IQ_Option
  
-I_want_money=IQ_Option("email","password")
+API=IQ_Option("email","password")
 
-ACTIVES="EURUSD"
-duration=1#minute 1 or 5
-amount=1
-action="call"#put
-print(I_want_money.buy_digital_spot(ACTIVES,amount,action,duration))
+Paridade = "EURUSD"
+Duracao = 1#minute 1 or 5
+Entrada = 1
+Direcao = "call"
+
+print(API.buy_digital_spot(Paridade, Entrada, Direcao, Duracao))
 ```
 
-#### <a id=getdigitalspotprofitaftersale>get_digital_spot_profit_after_sale</a>
+#### Realizar operações nas Digitais com buy_digital()
+Para poder utilizar esta função, você devera pegar o instument_id pelo API.get_realtime_strike_list()
 
-get Profit After Sale(P/L)
+```python
+buy_check,id=API.buy_digital(Entrada, instrument_id)
+```
+
+#### Pegar lucro pós venda com get_digital_spot_profit_after_sale()
+
 ![](image/profit_after_sale.png)
+
+Exemplo
 ```python
 from iqoptionapi.stable_api import IQ_Option 
-I_want_money=IQ_Option("email","passord")
-ACTIVES="EURUSD"
-duration=1#minute 1 or 5
-amount=100
-action="put"#put
+
+API = IQ_Option("email", "passord")
+
+Paridade = "EURUSD"
+Duracao = 1 #1 ou 5 minutos
+Entrada = 100
+Direcao = "put"
  
-I_want_money.subscribe_strike_list(ACTIVES,duration)
-id=I_want_money.buy_digital_spot(ACTIVES,amount,action,duration) 
+API.subscribe_strike_list(Paridade,Duracao)
+
+id=API.buy_digital_spot(Paridade,Entrada,Direcao,Duracao) 
  
 while True:
-    PL=I_want_money.get_digital_spot_profit_after_sale(id)
+    PL=API.get_digital_spot_profit_after_sale(id)
     if PL!=None:
         print(PL)
      
 ```
 
-#### <a id=getdigitalcurrentprofit>get_digital_current_profit</a>
+#### Pegar payout com get_digital_current_profit()
+Esta função funciona somente para digitais!
 
-get current price profit
-
-
+Exemplo
 ```python
 from iqoptionapi.stable_api import IQ_Option
 import time
-import logging
-#logging.basicConfig(level=logging.DEBUG,format='%(asctime)s %(message)s')
-I_want_money=IQ_Option("email","password")
-ACTIVES="EURUSD"
-duration=1#minute 1 or 5
-I_want_money.subscribe_strike_list(ACTIVES,duration)
+
+API = IQ_Option("email", "password")
+
+Paridade = "EURUSD"
+Duracao = 1#minute 1 or 5
+
+API.subscribe_strike_list(Paridade, Duracao)
 while True:
-    data=I_want_money.get_digital_current_profit(ACTIVES, duration)
-    print(data)#from first print it may be get false,just wait a second you can get the profit
-    time.sleep(1)
-I_want_money.unsubscribe_strike_list(ACTIVES,duration)
+    data=API.get_digital_current_profit(Paridade, Duracao)
+    print(data) # Nos primeiros retornos pode vir "False", aguarde alguns segundos que começara a retornar os valores do tipo float
+    time.sleep(1)	
+API.unsubscribe_strike_list(Paridade, Duracao)
 ```
 
-#### Buy digit
+
+#### Verificar resultado da operação nas **DIGITAIS**
+
+Para pegarmos o resultado de uma operação feito nas digitais, podemos estar utilizando o check_win_digital() ou o check_win_digital_v2()
+
+
+###### check_win_digital()
+Esta função foi implementada com get_digital_position()
 ```python
-buy_check,id=I_want_money.buy_digital(amount,instrument_id)
-#get instrument_id from I_want_money.get_realtime_strike_list
+API.check_win_digital(id) # get the id from API.buy_digital
+	# Retorno tipo tuple: status_operacao,lucro
+	# if you loose:Ture,o
+	# if you win:True,1232.3
+	# if trade not clode yet:False,None
 ```
-#### check win for digital
-
-##### check_win_digital
 
 
-this api is implement by get_digital_position()
-
-```python
-I_want_money.check_win_digital(id)#get the id from I_want_money.buy_digital
-#return:check_close,win_money
-#return sample
-#if you loose:Ture,o
-#if you win:True,1232.3
-#if trade not clode yet:False,None
-```
-##### <a id=checkwindigitalv2>check_win_digital_v2</a>
- 
-:exclamation::exclamation: this api is asynchronous get id data,it only can get id data before you call the buy action. if you restart the program,the asynchronous id data can not get again,so check_win_digital_v2 may not working,so you need to use "check_win_digital"!
+###### check_win_digital_v2()
+Função utilizada para retornar se o resultado de uma operação nas digitais
 
 ```python
-I_want_money.check_win_digital_v2(id)#get the id from I_want_money.buy_digital
-#return:check_close,win_money
-#return sample
-#if you loose:Ture,o
-#if you win:True,1232.3
-#if trade not clode yet:False,None
+API.check_win_digital_v2(id)#get the id from API.buy_digital
+	# Retorno tipo tuple: status_operacao,lucro
+	# Se você perder: True,0
+	# Se você ganhar: True,1232.3 
+	# Se a operação não encerrou ainda: False,None
 ```
 
-sample code
-
+Exemplo
 ```python
 from iqoptionapi.stable_api import IQ_Option
-import logging
-import random
-import time
-import datetime
-#logging.basicConfig(level=logging.DEBUG,format='%(asctime)s %(message)s')
-I_want_money=IQ_Option("email","password")
+
+API = IQ_Option("email", "password")
 
 
-ACTIVES="EURUSD"
-duration=1#minute 1 or 5
-amount=1
-action="call"#put
-id=(I_want_money.buy_digital_spot(ACTIVES,amount,action,duration))
+Paridade = "EURUSD"
+Duracao = 1 #1 ou 5 minutos
+Entrada = 1
+Direcao = "call"
+
+id= API.buy_digital_spot(Paridade, Duracao, Direcao, Entrada)
 print(id)
-if id !="error":
+
+if id != "error":
     while True:
-        check,win=I_want_money.check_win_digital_v2(id)
-        if check==True:
+        status,lucro = API.check_win_digital_v2(id)
+        if status == True:
             break
-    if win<0:
-        print("you loss "+str(win)+"$")
+    if lucro < 0:
+        print("Voce perdeu "+str(win)+"$")
     else:
-        print("you win "+str(win)+"$")
+        print("Voce ganhou "+str(win)+"$")
 else:
-    print("please try again")
+    print("Por favor, tente novamente")
 ```
 
 
-#### close digital
+#### Vender/fechar operação nas digitais com close_digital_option()
 ```python
-I_want_money.close_digital_option(id)
+API.close_digital_option(id)
 ```
-#### get digital data
 
-##### sample1
 
+#### Pegar informações das **DIGITAIS**
+
+
+Utilizando get_digital_position()
 ```python
 from iqoptionapi.stable_api import IQ_Option
-import logging
-import time
-#logging.basicConfig(level=logging.DEBUG,format='%(asctime)s %(message)s')
-I_want_money=IQ_Option("email","password")
-ACTIVES="EURUSD-OTC"
-duration=1#minute 1 or 5
-amount=1
-action="call"#put
-from datetime import datetime
+
+API = IQ_Option("email","password")
+
+Paridade = "EURUSD-OTC"
+Duracao = 1#minute 1 or 5
+Entrada = 1
+Direcao = "call"#put
+
+
  
-id=I_want_money.buy_digital_spot(ACTIVES,amount,action,duration) 
+id = API.buy_digital_spot(Paridade, Entrada, Direcao, Duracao) 
 
 while True:
-    check,_=I_want_money.check_win_digital(id)
+    check,_= API.check_win_digital(id)
     if check:
         break
-print(I_want_money.get_digital_position(id))
-print(I_want_money.check_win_digital(id))
+print(API.get_digital_position(id))
+print(API.check_win_digital(id))
 ```
-#####sample 2
-
+Utilizando funções get_positions(), get_digital_position() e get_position_history()
 ```python
-#print(I_want_money.get_order(id))#not work for digital
-print(I_want_money.get_positions("digital-option"))
-print(I_want_money.get_digital_position(2323433))#in put the id
-print(I_want_money.get_position_history("digital-option"))
-```
+#print(API.get_order(id)) # Não funciona com digitais
 
+print(API.get_positions("digital-option"))
+print(API.get_digital_position(2323433))#Deve ser colocado o ID
+print(API.get_position_history("digital-option"))
+```
 
 ---
+
 ### <a id=forex>For Forex&Stock&Commodities&Crypto&ETFs</a>
 
 #### you need to check Asset is open or close!
@@ -836,7 +804,7 @@ you can search instrument_type and instrument_id from this file
 #### Sample
 ```python
 from iqoptionapi.stable_api import IQ_Option
-I_want_money=IQ_Option("email","password")
+API=IQ_Option("email","password")
 
 instrument_type="crypto"
 instrument_id="BTCUSD"
@@ -878,19 +846,19 @@ auto_margin_call=False#True/False
 
 use_token_for_commission=False#True/False
 
-check,order_id=I_want_money.buy_order(instrument_type=instrument_type, instrument_id=instrument_id,
+check,order_id=API.buy_order(instrument_type=instrument_type, instrument_id=instrument_id,
             side=side, amount=amount,leverage=leverage,
             type=type,limit_price=limit_price, stop_price=stop_price,
             stop_lose_value=stop_lose_value, stop_lose_kind=stop_lose_kind,
             take_profit_value=take_profit_value, take_profit_kind=take_profit_kind,
             use_trail_stop=use_trail_stop, auto_margin_call=auto_margin_call,
             use_token_for_commission=use_token_for_commission)
-print(I_want_money.get_order(order_id)) 
-print(I_want_money.get_positions("crypto"))
-print(I_want_money.get_position_history("crypto"))
-print(I_want_money.get_available_leverages("crypto","BTCUSD"))
-print(I_want_money.close_position(order_id))
-print(I_want_money.get_overnight_fee("crypto","BTCUSD"))
+print(API.get_order(order_id)) 
+print(API.get_positions("crypto"))
+print(API.get_position_history("crypto"))
+print(API.get_available_leverages("crypto","BTCUSD"))
+print(API.close_position(order_id))
+print(API.get_overnight_fee("crypto","BTCUSD"))
 ```
  
 
@@ -927,7 +895,7 @@ auto_margin_call|True|False
 use_token_for_commission|True|False
 
 ```python
-check,order_id=I_want_money.buy_order(
+check,order_id=API.buy_order(
             instrument_type=instrument_type, instrument_id=instrument_id,
             side=side, amount=amount,leverage=leverage,
             type=type,limit_price=limit_price, stop_price=stop_price,
@@ -968,7 +936,7 @@ take_profit_kind="percent"
 take_profit_value=200
 use_trail_stop=False
 auto_margin_call=True
-I_want_money.change_order(ID_Name=ID_Name,order_id=order_id,
+API.change_order(ID_Name=ID_Name,order_id=order_id,
                 stop_lose_kind=stop_lose_kind,stop_lose_value=stop_lose_value,
                 take_profit_kind=take_profit_kind,take_profit_value=take_profit_value,
                 use_trail_stop=use_trail_stop,auto_margin_call=auto_margin_call)
@@ -985,7 +953,7 @@ get infomation about buy_order_id
 return (True/False,get_order,None)
 
 ```python
-I_want_money.get_order(buy_order_id)
+API.get_order(buy_order_id)
 ```
 
 #### get_pending
@@ -994,7 +962,7 @@ you will get there data
 ![](image/get_pending.png)
 
 ```python
-I_want_money.get_pending(instrument_type)
+API.get_pending(instrument_type)
 ```
 #### get_positions
 
@@ -1010,7 +978,7 @@ return (True/False,get_positions,None)
 instrument_type="crypto","forex","fx-option","multi-option","cfd","digital-option"
 
 ```python
-I_want_money.get_positions(instrument_type)
+API.get_positions(instrument_type)
 ```
 
 #### get_position
@@ -1023,7 +991,7 @@ you will get one position by buy_order_id
 return (True/False,position data,None)
 
 ```python
-I_want_money.get_positions(buy_order_id)
+API.get_positions(buy_order_id)
 ```
 
 #### get_position_history
@@ -1035,7 +1003,7 @@ you will get there data
 return (True/False,position_history,None)
 
 ```python
-I_want_money.get_position_history(instrument_type)
+API.get_position_history(instrument_type)
 ```
 #### <a id=getpositionhistoryv2>get_position_history_v2</a>
 
@@ -1050,7 +1018,7 @@ import random
 import time
 import datetime
 logging.basicConfig(level=logging.DEBUG,format='%(asctime)s %(message)s')
-I_want_money=IQ_Option("email","password")
+API=IQ_Option("email","password")
 
 #instrument_type="crypto","forex","fx-option","turbo-option","multi-option","cfd","digital-option"  
 instrument_type="digital-option"
@@ -1058,7 +1026,7 @@ limit=2#How many you want to get
 offset=0#offset from end time,if end time is 0,it mean get the data from now 
 start=0#start time Timestamp
 end=0#Timestamp
-data=I_want_money.get_position_history_v2(instrument_type,limit,offset,start,end)
+data=API.get_position_history_v2(instrument_type,limit,offset,start,end)
 
 print(data)
 
@@ -1068,7 +1036,7 @@ limit=2#How many you want to get
 offset=0#offset from end time,if end time is 0,it mean get the data from now 
 start=int(time.mktime(datetime.datetime.strptime("2019/1/1", "%Y/%m/%d").timetuple()))
 end=int(time.mktime(datetime.datetime.strptime("2019/7/1", "%Y/%m/%d").timetuple()))
-data=I_want_money.get_position_history_v2(instrument_type,limit,offset,start,end)
+data=API.get_position_history_v2(instrument_type,limit,offset,start,end)
 print(data)
 
 ```
@@ -1080,7 +1048,7 @@ get available leverages
 return (True/False,available_leverages,None)
 
 ```python
-I_want_money.get_available_leverages(instrument_type,actives)
+API.get_available_leverages(instrument_type,actives)
 ```
 #### cancel_order
 
@@ -1091,7 +1059,7 @@ you will do this
 return (True/False)
 
 ```python
-I_want_money.cancel_order(buy_order_id)
+API.cancel_order(buy_order_id)
 ```
 
 #### close_position
@@ -1103,7 +1071,7 @@ you will do this
 return (True/False)
 
 ```python
-I_want_money.close_position(buy_order_id)
+API.close_position(buy_order_id)
 ```
 
 #### get_overnight_fee
@@ -1111,7 +1079,7 @@ I_want_money.close_position(buy_order_id)
 return (True/False,overnight_fee,None)
 
 ```python
-I_want_money.get_overnight_fee(instrument_type,active)
+API.get_overnight_fee(instrument_type,active)
 ```
 ---
 ---
@@ -1140,7 +1108,7 @@ sample
     you will get the right data
 
 ```python
-I_want_money.get_candles(ACTIVES,interval,count,endtime)
+API.get_candles(ACTIVES,interval,count,endtime)
             #ACTIVES:sample input "EURUSD" OR "EURGBP".... youcan
             #interval:duration of candles
             #count:how many candles you want to get from now to past
@@ -1151,11 +1119,11 @@ try this code to get more than 1000 candle
 ```python
 from iqoptionapi.stable_api import IQ_Option
 import time
-I_want_money=IQ_Option("email","password")
+API=IQ_Option("email","password")
 end_from_time=time.time()
 ANS=[]
 for i in range(70):
-    data=I_want_money.get_candles("EURUSD", 60, 1000, end_from_time)
+    data=API.get_candles("EURUSD", 60, 1000, end_from_time)
     ANS =data+ANS
     end_from_time=int(data[0]["from"])-1
 print(ANS)
@@ -1170,22 +1138,22 @@ import logging
 import time
 #logging.basicConfig(level=logging.DEBUG,format='%(asctime)s %(message)s')
 print("login...")
-I_want_money=IQ_Option("email","password")
+API=IQ_Option("email","password")
 goal="EURUSD"
 size="all"#size=[1,5,10,15,30,60,120,300,600,900,1800,3600,7200,14400,28800,43200,86400,604800,2592000,"all"]
 maxdict=10
 print("start stream...")
-I_want_money.start_candles_stream(goal,size,maxdict)
+API.start_candles_stream(goal,size,maxdict)
 #DO something
 print("Do something...")
 time.sleep(10)
 
 print("print candles")
-cc=I_want_money.get_realtime_candles(goal,size)
+cc=API.get_realtime_candles(goal,size)
 for k in cc:
     print(goal,"size",k,cc[k])
 print("stop candle")
-I_want_money.stop_candles_stream(goal,size)
+API.stop_candles_stream(goal,size)
 ```
  
 ##### start_candles_stream
@@ -1216,7 +1184,7 @@ size
 #### <a id=timestamp> get_server_timestamp</a>
 the get_server_timestamp time is sync with iqoption
 ```python
-I_want_money.get_server_timestamp()
+API.get_server_timestamp()
 ```
 
 #### <a id=purchase>Purchase Time</a>
@@ -1226,7 +1194,7 @@ import time
 
 #get the end of the timestamp by expiration time
 def get_expiration_time(t):
-    exp=time.time()#or I_want_money.get_server_timestamp() to get more Precision
+    exp=time.time()#or API.get_server_timestamp() to get more Precision
     if (exp % 60) > 30:
         end = exp - (exp % 60) + 60*(t+1)
     else:
@@ -1252,17 +1220,17 @@ from iqoptionapi.stable_api import IQ_Option
 import logging
 import time
 #logging.basicConfig(level=logging.DEBUG,format='%(asctime)s %(message)s')
-I_want_money=IQ_Option("email","password")
+API=IQ_Option("email","password")
 instrument_type="digital-option"#"binary-option"/"digital-option"/"forex"/"cfd"/"crypto"
-I_want_money.subscribe_top_assets_updated(instrument_type)
+API.subscribe_top_assets_updated(instrument_type)
 
 print("__Please_wait_for_sec__")
 while True:
-    if I_want_money.get_top_assets_updated(instrument_type)!=None:
-        print(I_want_money.get_top_assets_updated(instrument_type))
+    if API.get_top_assets_updated(instrument_type)!=None:
+        print(API.get_top_assets_updated(instrument_type))
         print("\n\n")
     time.sleep(1)
-I_want_money.unsubscribe_top_assets_updated(instrument_type)
+API.unsubscribe_top_assets_updated(instrument_type)
 ```
 
 #### get popularity by top_assets_updated() api
@@ -1281,20 +1249,20 @@ import operator
 def opcode_to_name(opcode_data,opcode):
     return list(opcode_data.keys())[list(opcode_data.values()).index(opcode)]            
 
-I_want_money=IQ_Option("email","password")
-I_want_money.update_ACTIVES_OPCODE()
-opcode_data=I_want_money.get_all_ACTIVES_OPCODE()
+API=IQ_Option("email","password")
+API.update_ACTIVES_OPCODE()
+opcode_data=API.get_all_ACTIVES_OPCODE()
 
 instrument_type="digital-option"#"binary-option"/"digital-option"/"forex"/"cfd"/"crypto"
-I_want_money.subscribe_top_assets_updated(instrument_type)
+API.subscribe_top_assets_updated(instrument_type)
 
 
 print("__Please_wait_for_sec__")
 while True:
-    if I_want_money.get_top_assets_updated(instrument_type)!=None:
+    if API.get_top_assets_updated(instrument_type)!=None:
         break
 
-top_assets=I_want_money.get_top_assets_updated(instrument_type)
+top_assets=API.get_top_assets_updated(instrument_type)
 popularity={}
 for asset in top_assets:
     opcode=asset["active_id"]
@@ -1311,72 +1279,5 @@ print("__Popularity_min_to_max__")
 for lis in sorted_popularity:
     print(lis)
 
-I_want_money.unsubscribe_top_assets_updated(instrument_type)
+API.unsubscribe_top_assets_updated(instrument_type)
 ```
-
-
----
-### Get mood
-
-for now... only support get binary option mood , i will implement beterr if need..
-
-Sample
-
-```python
-from iqoptionapi.stable_api import IQ_Option
-I_want_money=IQ_Option("email","password")
-goal="EURUSD"
-I_want_money.start_mood_stream(goal)
-print(I_want_money.get_traders_mood(goal))
-I_want_money.stop_mood_stream(goal)
-```
-
-#### get_traders_mood
-
-
-get  percent of higher(call)
-
-if you want to know percent of lower(put) just 1-higher
-```python
-I_want_money.get_traders_mood(goal)
-#input:input "EURUSD" OR "EURGBP".... you can view by get_all_ACTIVES_OPCODE
-#output:(float) the higher(call)%
-#if you want to know lower(put)% try 1-I_want_money.get_traders_mood(goal)
-```
-#### get_all_traders_mood
-get all you start mood
-```python
-I_want_money.get_all_traders_mood(goal)
-#output:(dict) all mood you start
-```
-
-### Account
-
-#### get balance
-```python
-I_want_money.get_balance()
-```
-
- 
-#### <a id=resetpracticebalance>reset practice balance</a>
-
-reset practice balance to $10000
-
-```python
-from iqoptionapi.stable_api import IQ_Option
-I_want_money=IQ_Option("email","password")
-print(I_want_money.reset_practice_balance())
-```
-
-#### Change real/practice Account
-```python
-I_want_money.change_balance(MODE)
-                        #MODE: "PRACTICE"/"REAL"
-```
-
----
-
-
- 
- 
-    
